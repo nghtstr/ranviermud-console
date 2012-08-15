@@ -106,9 +106,9 @@ div.line{
 			transform-origin: 0 50%;
 				 
 	height: 5px; /* Line width of 3 */
-	background: #948C79; /* Black fill */
+	background: #2B7F11; /* Black fill */
 	opacity: 0.5;
-	box-shadow: 0 0 8px #B99B7E;
+	box-shadow: 0 0 8px #18B22A;
 	z-index: 200;
 
 }
