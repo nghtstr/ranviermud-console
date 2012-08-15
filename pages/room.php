@@ -97,5 +97,19 @@ div.room {
 	width: 60px;
 	border: 1px solid black;
 	position: absolute;
+	z-index: 400;
+	background-color: white;
+}
+div.line{
+	-webkit-transform-origin: 0 50%;
+	   -moz-transform-origin: 0 50%;
+			transform-origin: 0 50%;
+				 
+	height: 5px; /* Line width of 3 */
+	background: #948C79; /* Black fill */
+	opacity: 0.5;
+	box-shadow: 0 0 8px #B99B7E;
+	z-index: 200;
+
 }
 </style>
