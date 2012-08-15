@@ -100,6 +100,17 @@ div.room {
 	z-index: 400;
 	background-color: white;
 }
+div.transition {
+	height: 50px;
+	width: 60px;
+	border: 1px solid black;
+	position: absolute;
+	z-index: 400;
+	background-color: white;
+	-webkit-transform: skew(20deg);
+	   -moz-transform: skew(20deg);
+	     -o-transform: skew(20deg);
+}
 div.line{
 	-webkit-transform-origin: 0 50%;
 	   -moz-transform-origin: 0 50%;

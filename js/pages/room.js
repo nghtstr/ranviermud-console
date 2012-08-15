@@ -1,6 +1,7 @@
 var rooms = new Array();
 var activeArea = '';
 var paths = new Array();
+var transitions = new Array();
 
 function doTransformMath(x1,y1, x2,y2){
 	return {
@@ -46,13 +47,23 @@ function addPath(start, end) {
 	}
 }
 
+function getRoomCoord(id) {
+	if (typeof(rooms[id]) == 'undefined') {
+		return transitions[id];
+	} else {
+		return rooms[id].RC_MAP;
+	}
+}
+
 function setupLines() {
 	for (var x = 0; x < paths.length; x++) {
+		var a = getRoomCoord(paths[x].a);
+		var b = getRoomCoord(paths[x].b);
 		paths[x].line = createLine(
-			rooms[paths[x].a].RC_MAP.x + ($('#room_' + paths[x].a).width() / 2),
-			rooms[paths[x].a].RC_MAP.y + ($('#room_' + paths[x].a).height() / 2),
-			rooms[paths[x].b].RC_MAP.x + ($('#room_' + paths[x].b).width() / 2),
-			rooms[paths[x].b].RC_MAP.y + ($('#room_' + paths[x].b).height() / 2)
+			a.x + ($('#room_' + paths[x].a).width() / 2),
+			a.y + ($('#room_' + paths[x].a).height() / 2),
+			b.x + ($('#room_' + paths[x].b).width() / 2),
+			b.y + ($('#room_' + paths[x].b).height() / 2)
 		);
 	}
 }
@@ -60,12 +71,14 @@ function setupLines() {
 function changePath(id) {
 	for (var x = 0; x < paths.length; x++) {
 		if ((paths[x].a == id) || (paths[x].b == id)) {
+			var a = getRoomCoord(paths[x].a);
+			var b = getRoomCoord(paths[x].b);
 			changeLine(
 				paths[x].line,
-				rooms[paths[x].a].RC_MAP.x + ($('#room_' + paths[x].a).width() / 2),
-				rooms[paths[x].a].RC_MAP.y + ($('#room_' + paths[x].a).height() / 2),
-				rooms[paths[x].b].RC_MAP.x + ($('#room_' + paths[x].b).width() / 2),
-				rooms[paths[x].b].RC_MAP.y + ($('#room_' + paths[x].b).height() / 2)
+				a.x + ($('#room_' + paths[x].a).width() / 2),
+				a.y + ($('#room_' + paths[x].a).height() / 2),
+				b.x + ($('#room_' + paths[x].b).width() / 2),
+				b.y + ($('#room_' + paths[x].b).height() / 2)
 			);
 		}
 	}
@@ -73,6 +86,7 @@ function changePath(id) {
 
 function loadAreaMap(area) {
 	activeArea = area;
+	transitions = new Array();
 	$.post('/php/room/loadAreaMap.php', {
 		area: area
 	}, function (r) {
@@ -86,6 +100,16 @@ function loadAreaMap(area) {
 			$('div.map').append('<div class="room" id="room_' + rm.location + '" style="top: ' + rm.RC_MAP.y + 'px; left: ' + rm.RC_MAP.x + 'px"><span>' + rm.title.en + '</span></div>');
 			for (var e = 0; e < rm.exits.length; e++) {
 				addPath(loc, String(rm.exits[e].location));
+				if (typeof(rm.exits[e].transition) != 'undefined') {
+					if (typeof(transitions[rm.exits[e].location]) == 'undefined') {
+						transitions[rm.exits[e].location] = rm.exits[e].transition;
+						transitions[rm.exits[e].location]['rooms'] = new Array();
+						transitions[rm.exits[e].location]['rooms'].push({l: loc, e: e});
+						$('div.map').append('<div class="transition" id="room_' + rm.exits[e].location + '" style="top: ' + rm.exits[e].transition.y + 'px; left: ' + rm.exits[e].transition.x + 'px"><span>To ' + rm.exits[e].location + '</span></div>');
+					} else {
+						transitions[rm.exits[e].location]['rooms'].push({l: loc, e: e});
+					}
+				}
 			}
 		}
 		$("div.room").draggable({
@@ -102,6 +126,32 @@ function loadAreaMap(area) {
 							y: $(this).position().top };
 				rooms[loc]['RC_MAP'] = obj;
 				saveRoom(loc);
+			}
+		});
+		$("div.transition").draggable({
+			drag: function() {
+				var obj = { x: $(this).position().left,
+							y: $(this).position().top };
+				var loc = $(this).attr('id').substr(5);
+				for (var n = 0; n < transitions[loc].rooms.length; n++) {
+					var l = transitions[loc].rooms[n].l;
+					var e = transitions[loc].rooms[n].e;
+					rooms[l].exits[e].transition.x = obj.x;
+					rooms[l].exits[e].transition.y = obj.y;
+				}
+				changePath(loc);
+			},
+			stop: function() {
+				var loc = $(this).attr('id').substr(5);
+				var obj = { x: $(this).position().left,
+							y: $(this).position().top };
+				for (var n = 0; n < transitions[loc].rooms.length; n++) {
+					var l = transitions[loc].rooms[n].l;
+					var e = transitions[loc].rooms[n].e;
+					rooms[l].exits[e].transition.x = obj.x;
+					rooms[l].exits[e].transition.y = obj.y;
+					saveRoom(l);
+				}
 			}
 		});
 		setupLines();
