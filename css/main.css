@@ -1297,8 +1297,7 @@ select:focus:required:invalid:focus {
   border: 1px solid #ccc; 
   display: inline-block;
   font-weight: normal;
-  height: 20px;line-height: 20px;
-  /*height: 18px;line-height: 18px;*/
+  height: 18px;line-height: 18px;
   padding: 4px 5px;
   text-align: center;
   text-shadow: 0 1px 0 #ffffff;
@@ -2780,7 +2779,7 @@ input[type="button"].btn.btn-mini,input[type="reset"].btn.btn-mini,input[type="s
   display: block;
 }
 
-.nav > li > a:hover{text-decoration:none;background-color: #323232;/*#eeeeee;*/}
+.nav > li > a:hover{text-decoration:none;background-color: #C4C4C4;/*#eeeeee;*/}
 .snav > li > a:hover{text-decoration:none;background-color: #373737;/*#323232;*/}
 
 .nav > .pull-right,.snav > .pull-right {

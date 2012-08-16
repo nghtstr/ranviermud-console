@@ -14,6 +14,7 @@ include_once('php/global/ranvier.php');
 	<script language="javascript" src="/js/sprintf.js"></script>
 	<script language="javascript" src="/js/jquery-ui.min.js"></script>
 	<script language="javascript" src="/js/jquery-touch-punch.js"></script>
+	<script language="javascript" src="/js/json2.js"></script>
 </head>
 <body id="nosn">
 	<? include('header.php'); ?>

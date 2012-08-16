@@ -28,4 +28,27 @@ function saveRanvierFile($name, $data) {
 	return file_put_contents($settings['base_game'] . $name, $data);
 }
 
+function loadRoomList() {
+	include_once(dirname(__FILE__) . '/yaml/spyc.php');
+	$settings = loadSettings();
+	$areas = array();
+	if ($handle = opendir($settings['base_game'] . '/entities/areas')) {
+		while (false !== ($entry = readdir($handle))) {
+			if ($entry != "." && $entry != "..") {
+				$array = Spyc::YAMLLoad($settings['base_game'] . '/entities/areas/' . $entry . '/manifest.yml');
+				$areas[$entry] = $array[$entry]['title'];
+			}
+		}
+		closedir($handle);
+	}
+	$rooms = array();
+	
+	foreach ($areas as $k=>$l) {
+		$array = Spyc::YAMLLoad($settings['base_game'] . '/entities/areas/' . $k . '/rooms.yml');
+		
+		foreach ($array as $a) { $rooms[$a['location']] = array('title'=>$a['title']['en'], 'area'=>$k); }
+	}
+	saveSetting('rooms', $rooms);
+}
+
 ?>

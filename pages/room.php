@@ -1,6 +1,11 @@
 <?
 
 $settings = loadSettings();
+if (!is_array($settings['rooms'])) {
+	//error_reporting(E_ALL);
+	loadRoomList();
+	$settings = loadSettings();
+}
 include(dirname(__FILE__) . '/../php/global/yaml/spyc.php');
 
 $areas = array();
@@ -19,21 +24,22 @@ if ($handle = opendir($settings['base_game'] . '/entities/areas')) {
 <div id="titlebody">
 	<div class="row-fluid">
 		<div class="span12 titlediv">
-			<h1>Settings</h1>
+			<h1>Areas and Rooms</h1>
 		</div>
 	</div>
 </div>
+<textarea id="roomList" style="display: none"><?= json_encode($settings['rooms']); ?></textarea>
 <div class="container-fluid">
 	<div class="row-fluid">
 		<div class="span3">
 			<div class="row-fluid">
 				<div class="span12 widget">
-					<h2>Areas</h2>
+					<h2>Areas &nbsp; <a href="#" onClick="addNewArea()" class="btn btn-mini"><i class="icon-plus-sign"></i> Add</a></h2>
 					<div class="well">
 						<ul class="nav nav-list" id="settingList" style="padding: 8px 0;">
 							<?
 							foreach ($areas as $k=>$l) {
-								echo '<li onClick="loadAreaMap(\'' . $k . '\');" id="area_' . $k . '"><a href="#">' . $l . '</a></li>';
+								echo '<li onClick="loadAreaMap(\'' . $k . '\');" id="area_' . $k . '" class="areaMenu"><a href="#">' . $l . '<i class="icon-info-sign"></i></a></li>';
 							}
 							?>
 						</ul>
@@ -44,7 +50,7 @@ if ($handle = opendir($settings['base_game'] . '/entities/areas')) {
 		<div class="span9">
 			<div class="row-fluid">
 				<div class="span12 widget" style="margin-left: 0">
-					<h2>Rooms</h2>
+					<h2>Rooms &nbsp; <a href="#" onClick="addNewRoom()" class="btn btn-primary btn-mini"><i class="icon-asterisk icon-white"></i> New</a></h2>
 					<div class="widget-inside" id="settingPanels">
 						<div class="span12 map"></div>
 					</div>
@@ -53,10 +59,51 @@ if ($handle = opendir($settings['base_game'] . '/entities/areas')) {
 		</div>
 	</div>
 </div>
-<div class="modal hide fade" id="myModal">
+<div class="modal hide fade" id="areaEditor">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal">x</button>
-		<h3>Field Editor</h3>
+		<h3>Area Editor</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row-fluid">
+			<div class="span4">Area Name</div>
+			<div class="span8"><input type="text" class="span12" id="areaName"></div>
+		</div>
+		<div class="row-fluid">
+			<div class="span4">Area Short Name</div>
+			<div class="span8"><input type="text" class="span12" id="areaShortName"></div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">Close</a>
+		<a href="#" class="btn btn-primary" onClick="saveAttribute()">Save changes</a>
+	</div>
+</div>
+<div class="modal hide fade" id="roomEditor">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">x</button>
+		<h3>Room Editor</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row-fluid">
+			<div class="span4">Room</div>
+			<div class="span8 input-prepend"><span class="add-on">#</span><input type="text" placeholder="ID" class="span3" id="roomID" style="margin-right: 8px;"><input type="text" placeholder="Room Title" class="span8" id="roomTitle"></div>
+		</div>
+		<div class="row-fluid">
+			<div class="span4">Room Description</div>
+			<div class="span8"><textarea class="span12" id="roomDescription" rows="6"></textarea></div>
+		</div>
+		
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">Close</a>
+		<a href="#" class="btn btn-primary" onClick="saveAttribute()">Save changes</a>
+	</div>
+</div>
+<div class="modal hide fade" id="junctionEditor">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">x</button>
+		<h3>Junction Editor</h3>
 	</div>
 	<div class="modal-body">
 		<div class="row-fluid">
@@ -100,16 +147,17 @@ div.room {
 	z-index: 400;
 	background-color: white;
 }
-div.transition {
+div.transition
+{
 	height: 50px;
 	width: 60px;
-	border: 1px solid black;
+	border: 2px ridge black;
 	position: absolute;
 	z-index: 400;
-	background-color: white;
+	background-color: #D1FBFC;
 	-webkit-transform: skew(20deg);
-	   -moz-transform: skew(20deg);
-	     -o-transform: skew(20deg);
+	-moz-transform: skewX(20deg);
+	-o-transform: skew(20deg);
 }
 div.line{
 	-webkit-transform-origin: 0 50%;
@@ -122,5 +170,8 @@ div.line{
 	box-shadow: 0 0 8px #18B22A;
 	z-index: 200;
 
+}
+li.areaMenu i {
+	float: right;
 }
 </style>

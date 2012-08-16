@@ -1,4 +1,6 @@
 var rooms = new Array();
+var roomList = '';
+var roomListByArea = new Array();
 var activeArea = '';
 var paths = new Array();
 var transitions = new Array();
@@ -105,7 +107,8 @@ function loadAreaMap(area) {
 						transitions[rm.exits[e].location] = rm.exits[e].transition;
 						transitions[rm.exits[e].location]['rooms'] = new Array();
 						transitions[rm.exits[e].location]['rooms'].push({l: loc, e: e});
-						$('div.map').append('<div class="transition" id="room_' + rm.exits[e].location + '" style="top: ' + rm.exits[e].transition.y + 'px; left: ' + rm.exits[e].transition.x + 'px"><span>To ' + rm.exits[e].location + '</span></div>');
+						var name = (typeof(roomList[rm.exits[e].location]) != 'undefined' ? roomList[rm.exits[e].location].title : rm.exits[e].location);
+						$('div.map').append('<div class="transition" id="room_' + rm.exits[e].location + '" style="top: ' + rm.exits[e].transition.y + 'px; left: ' + rm.exits[e].transition.x + 'px"><span>To ' + name + '</span></div>');
 					} else {
 						transitions[rm.exits[e].location]['rooms'].push({l: loc, e: e});
 					}
@@ -163,6 +166,56 @@ function saveRoom(id) {
 		area: activeArea,
 		room: rooms[id]
 	}, function(ret) {
-		
+		roomList[id].area = activeArea;
+		roomList[id].title = rooms[id].title.en;
 	}, '');
 }
+
+function addNewArea() {
+	$('#areaName').val('');
+	$('#areaShortName').val('').attr('disabled', false);
+	$('#areaEditor').modal('show');
+}
+
+function addNewRoom() {
+	if (activeArea == '') {
+		alert('You have not selected an Area yet to put this room.  Please select or create your area now');
+	} else {
+		$('#roomID').val('').attr('disabled', false);
+		$('#roomTitle').val('');
+		$('#roomDescription').val('');
+		$('#roomEditor').modal('show');
+	}
+}
+
+function generateRoomByArea() {
+	for (rid in roomList) {
+		var a = roomList[rid].area;
+		if (typeof(roomListByArea[a]) == 'undefined') roomListByArea[a] = new Array();
+		roomListByArea[a].push({loc: rid, title: roomList[rid].title });
+	}
+}
+
+$(document).ready(function (){
+	$('#areaEditor, #roomEditor, #junctionEditor').modal({
+		backdrop: 'static',
+		keyboard: false,
+		show: false
+	});
+	roomList = JSON.parse($('#roomList').val());
+	$('#roomList').remove();
+	generateRoomByArea();
+	
+	$('body').on({
+		click: function(e) {
+			
+		}
+	}, 'i.icon-info-sign');
+	
+	$('div.map').on({
+		dblclick: function(e) {
+			
+		}
+	}, 'div.room');
+	
+});
