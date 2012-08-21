@@ -1,3 +1,5 @@
+var codeEditor = '';
+
 if(typeof String.prototype.trim !== 'function') {
 	String.prototype.trim = function() {
 		return this.replace(/^\s+|\s+$/g, ''); 
@@ -45,3 +47,41 @@ function createNotificationAfter(type, size, header, text, icon, child, timeout)
 	});
 	if (timeout > 0) setTimeout("hideNotification('" + id + "')", timeout);
 }
+
+//#mark Script Editor Functions
+
+function openScriptEditor(filepath, title) {
+	$.post('/php/global/getScriptFile.php', {
+		file: filepath,
+		title: title
+	}, function(data) {
+		$('#fileID').val(data.filepath);
+		$('#editorTitle').text(data.title);
+		codeEditor.setValue(data.script);
+		$('#scriptEditor').modal('show');
+		
+	}, 'json');
+}
+
+function saveEditor() {
+	$.post('/php/global/saveScriptFile.php', {
+		file: $('#fileID').val(),
+		script: codeEditor.getValue()
+	}, function(data) {
+		$('#scriptEditor').modal('hide');
+	}, '');
+}
+
+//#mark Document Initialize
+
+$(document).ready(function (){
+	$('#scriptEditor').modal({
+		backdrop: 'static',
+		keyboard: false,
+		show: false
+	});
+	codeEditor = ace.edit("editorTextPlacement");
+	codeEditor.setTheme("ace/theme/ranvier");
+	var JavaScriptMode = require("ace/mode/javascript").Mode;
+	codeEditor.getSession().setMode(new JavaScriptMode());
+});

@@ -93,6 +93,7 @@ function loadAreaMap(area) {
 		area: area
 	}, function (r) {
 		rooms = r;
+		paths = new Array();
 		$('div.map div').remove();
 		for (var loc in rooms) {
 			if (typeof(rooms[loc]['RC_MAP']) == 'undefined') {
@@ -100,17 +101,19 @@ function loadAreaMap(area) {
 			}
 			var rm = rooms[loc];
 			$('div.map').append('<div class="room" id="room_' + rm.location + '" style="top: ' + rm.RC_MAP.y + 'px; left: ' + rm.RC_MAP.x + 'px"><span>' + rm.title.en + '</span></div>');
-			for (var e = 0; e < rm.exits.length; e++) {
-				addPath(loc, String(rm.exits[e].location));
-				if (typeof(rm.exits[e].transition) != 'undefined') {
-					if (typeof(transitions[rm.exits[e].location]) == 'undefined') {
-						transitions[rm.exits[e].location] = rm.exits[e].transition;
-						transitions[rm.exits[e].location]['rooms'] = new Array();
-						transitions[rm.exits[e].location]['rooms'].push({l: loc, e: e});
-						var name = (typeof(roomList[rm.exits[e].location]) != 'undefined' ? roomList[rm.exits[e].location].title : rm.exits[e].location);
-						$('div.map').append('<div class="transition" id="room_' + rm.exits[e].location + '" style="top: ' + rm.exits[e].transition.y + 'px; left: ' + rm.exits[e].transition.x + 'px"><span>To ' + name + '</span></div>');
-					} else {
-						transitions[rm.exits[e].location]['rooms'].push({l: loc, e: e});
+			if (typeof(rm.exits) != 'undefined') {
+				for (var e = 0; e < rm.exits.length; e++) {
+					addPath(loc, String(rm.exits[e].location));
+					if (typeof(rm.exits[e].transition) != 'undefined') {
+						if (typeof(transitions[rm.exits[e].location]) == 'undefined') {
+							transitions[rm.exits[e].location] = rm.exits[e].transition;
+							transitions[rm.exits[e].location]['rooms'] = new Array();
+							transitions[rm.exits[e].location]['rooms'].push({l: loc, e: e});
+							var name = (typeof(roomList[rm.exits[e].location]) != 'undefined' ? roomList[rm.exits[e].location].title : rm.exits[e].location);
+							$('div.map').append('<div class="transition" id="room_' + rm.exits[e].location + '" style="top: ' + rm.exits[e].transition.y + 'px; left: ' + rm.exits[e].transition.x + 'px"><span>To ' + name + '</span></div>');
+						} else {
+							transitions[rm.exits[e].location]['rooms'].push({l: loc, e: e});
+						}
 					}
 				}
 			}
@@ -166,8 +169,12 @@ function saveRoom(id) {
 		area: activeArea,
 		room: rooms[id]
 	}, function(ret) {
-		roomList[id].area = activeArea;
-		roomList[id].title = rooms[id].title.en;
+		if (typeof(roomList[id]) != 'undefined') {
+			roomList[id].area = activeArea;
+			roomList[id].title = rooms[id].title.en;
+		} else {
+			roomList[id] = { area: activeArea, title: rooms[id].title.en };
+		}
 	}, '');
 }
 
@@ -181,11 +188,36 @@ function addNewRoom() {
 	if (activeArea == '') {
 		alert('You have not selected an Area yet to put this room.  Please select or create your area now');
 	} else {
-		$('#roomID').val('').attr('disabled', false);
-		$('#roomTitle').val('');
-		$('#roomDescription').val('');
-		$('#roomEditor').modal('show');
+		openRoomEditor('');
 	}
+}
+
+function openRoomEditor(id) {
+	if (id != '') {
+		$('#roomID').val(id).attr('disabled', true);
+		$('#roomTitle').val(rooms[id].title.en);
+		$('#roomDescription').val(rooms[id].description.en);
+	} else {
+		$('#roomID, #roomTitle, #roomDescription').val('').attr('disabled', false);
+	}
+	$('#roomEditor').modal('show');
+}
+
+function saveRoomEditor() {
+	var id = $('#roomID').val();
+	if (typeof(rooms[id]) != 'undefined') {
+		rooms[id].title.en = $('#roomTitle').val();
+		rooms[id].description.en = $('#roomDescription').val();
+	} else {
+		rooms[id] = {
+			location: id,
+			title: { en: $('#roomTitle').val() },
+			description: { en: $('#roomDescription').val() },
+			area: activeArea
+		};
+	}
+	saveRoom(id);
+	$('#roomEditor').modal('hide');
 }
 
 function generateRoomByArea() {
@@ -194,6 +226,10 @@ function generateRoomByArea() {
 		if (typeof(roomListByArea[a]) == 'undefined') roomListByArea[a] = new Array();
 		roomListByArea[a].push({loc: rid, title: roomList[rid].title });
 	}
+}
+
+function openRoomScriptEditor() {
+	openScriptEditor('scripts/rooms/' + $('#roomID').val() + '.js', 'Room: ' + $('#roomID').val() + ' - ' + $('#roomTitle').val());
 }
 
 $(document).ready(function (){
@@ -214,7 +250,7 @@ $(document).ready(function (){
 	
 	$('div.map').on({
 		dblclick: function(e) {
-			
+			openRoomEditor($(this).attr('id').substr(5));
 		}
 	}, 'div.room');
 	

@@ -66,17 +66,21 @@ if ($handle = opendir($settings['base_game'] . '/entities/areas')) {
 	</div>
 	<div class="modal-body">
 		<div class="row-fluid">
+			<div class="span4">Area Short Name</div>
+			<div class="span8"><input type="text" class="span12" id="areaShortName"></div>
+		</div>
+		<div class="row-fluid">
 			<div class="span4">Area Name</div>
 			<div class="span8"><input type="text" class="span12" id="areaName"></div>
 		</div>
 		<div class="row-fluid">
-			<div class="span4">Area Short Name</div>
-			<div class="span8"><input type="text" class="span12" id="areaShortName"></div>
+			<div class="span4">Area Level Range</div>
+			<div class="span8"><div class="row-fluid"><div class="span2"><input type="text" class="span12" placeholder="Min" id="areaLevelMin"></div><div class="span1">to</div><div class="span2"><input type="text" class="span12" placeholder="Max" id="areaLevelMax"></div></div></div>
 		</div>
 	</div>
 	<div class="modal-footer">
 		<a href="#" class="btn" data-dismiss="modal">Close</a>
-		<a href="#" class="btn btn-primary" onClick="saveAttribute()">Save changes</a>
+		<a href="#" class="btn btn-primary" onClick="saveAreaEditor()">Save changes</a>
 	</div>
 </div>
 <div class="modal hide fade" id="roomEditor">
@@ -93,11 +97,14 @@ if ($handle = opendir($settings['base_game'] . '/entities/areas')) {
 			<div class="span4">Room Description</div>
 			<div class="span8"><textarea class="span12" id="roomDescription" rows="6"></textarea></div>
 		</div>
-		
+		<div class="row-fluid">
+			<div class="span4">Room Script</div>
+			<div class="span8"><a href="#" class="btn" onClick="openRoomScriptEditor()">Script Editor</a></div>
+		</div>
 	</div>
 	<div class="modal-footer">
 		<a href="#" class="btn" data-dismiss="modal">Close</a>
-		<a href="#" class="btn btn-primary" onClick="saveAttribute()">Save changes</a>
+		<a href="#" class="btn btn-primary" onClick="saveRoomEditor()">Save changes</a>
 	</div>
 </div>
 <div class="modal hide fade" id="junctionEditor">
@@ -132,6 +139,7 @@ if ($handle = opendir($settings['base_game'] . '/entities/areas')) {
 		<a href="#" class="btn btn-primary" onClick="saveAttribute()">Save changes</a>
 	</div>
 </div>
+
 <style>
 .well { margin-bottom: 0px !important; }
 div.map {

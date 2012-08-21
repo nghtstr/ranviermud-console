@@ -2,3 +2,14 @@
 @import url(/css/main.css);
 @import url(/css/responsive.css);
 @import url(/js/prettify/prettify.css);
+
+#scriptEditor {
+	min-height: 400px;
+}
+
+#scriptEditor .modal-body { height: 300px; }
+
+#editorTextPlacement {
+	height: 280px;
+	width: 97%;
+}

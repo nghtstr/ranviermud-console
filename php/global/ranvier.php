@@ -1,6 +1,7 @@
 <?
 
 define('SETTING_FILE', dirname(__FILE__) . '/../../conf/mud.conf');
+define('IS_YAML', true);
 
 function loadSettings() {
 	if (file_exists(SETTING_FILE)) {
@@ -16,16 +17,25 @@ function saveSetting($key, $val) {
 	file_put_contents(SETTING_FILE, json_encode($ar), 0644);
 }
 
-function readRanvierFile($name) {
+function readRanvierFile($name, $yaml = false) {
 	$settings = loadSettings();
 	
-	return file_get_contents($settings['base_game'] . $name);
+	if ($yaml) {
+		include_once('./yaml/spyc.php');
+		return Spyc::YAMLLoad($settings['base_game'] . $name);
+	} else {
+		return file_get_contents($settings['base_game'] . $name);
+	}
 }
 
 function saveRanvierFile($name, $data) {
 	$settings = loadSettings();
 	
 	return file_put_contents($settings['base_game'] . $name, $data);
+}
+
+function ranvierFileExists($file) {
+	return file_exists($settings['base_game'] . $name);
 }
 
 function loadRoomList() {

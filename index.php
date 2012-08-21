@@ -15,6 +15,9 @@ include_once('php/global/ranvier.php');
 	<script language="javascript" src="/js/jquery-ui.min.js"></script>
 	<script language="javascript" src="/js/jquery-touch-punch.js"></script>
 	<script language="javascript" src="/js/json2.js"></script>
+	<script src="/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/js/ace/theme-ranvier.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/js/ace/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body id="nosn">
 	<? include('header.php'); ?>
@@ -23,6 +26,26 @@ include_once('php/global/ranvier.php');
 	<? include('pages/' . $_POST['sec'] . '.php'); ?>
 	</div>
 	</div>
+
+<div class="modal hide fade" id="scriptEditor">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">x</button>
+		<h3>Script Editor</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row-fluid">
+			<div class="span4">Editor For<input type="hidden" id="fileID"></div>
+			<div class="span8"><span id="editorTitle"></span></div>
+		</div>
+		<div class="row-fluid">
+			<div id="editorTextPlacement"></textarea></div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">Close Without Saving</a>
+		<a href="#" class="btn btn-primary" onClick="saveEditor()">Save changes</a>
+	</div>
+</div>
 </body>
 <script>
 $(document).ready(function() {
