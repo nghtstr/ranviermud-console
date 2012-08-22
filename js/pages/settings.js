@@ -1,13 +1,6 @@
 var attributes = new Array();
 
-function show(item) {
-	$('#settingList li').removeClass('active');
-	$('#settingList li.'+item).addClass('active');
-	$('#settingPanels > div').hide();
-	$('#' + item).show();
-	$('#settingHeader').text($('#' + item).attr('alt'));
-}
-
+//#mark Control File Locations
 function saveFilePath() {
 	$('#notWriteable, #notThere').hide();
 	$.post('/php/settings/checkPathWritable.php', {
@@ -20,6 +13,8 @@ function saveFilePath() {
 		}); }
 	}, 'json');
 }
+
+//#mark MOTD Functions
 
 function saveMOTD() {
 	$.post('/php/settings/saveMOTD.php', {
@@ -35,7 +30,7 @@ function saveMOTD() {
 	}, 'json');
 }
 
-function defNBSP(x) { return (x == '' ? '&nbsp;' : x); }
+//#mark Player Attribute Functions
 
 function getCurrentPlayerSetup() {
 	$.post('/php/settings/getPlayerSetup.php', {
@@ -95,6 +90,62 @@ function saveAttribute() {
 		$('#myModal').modal('hide');
 	}, '');
 }
+//#mark Behavior Functions
+function createBehavior(type) {
+	$('#behaviorType').val(type);
+	$('#behavior').val('');
+	$('#createBehaviorModal').modal('show');
+}
+
+function editBehavior(type, file) {
+	var types = {'objects': 'Object Behavior', 'npcs': 'Mob Behavior'};
+	openScriptEditor('scripts/behaviors/' + type + '/' + file + '.js', types[type] + ': ' + file);
+}
+
+function saveBehavior() {
+	$.post('/php/settings/createBehavior.php', {
+		behavior: $('#behavior').val(),
+		type: $('#behaviorType').val()
+	}, function(ret) {
+		if (ret == 'OBJECT') getCurrentObjectBehaviors();
+		if (ret == 'MOB') getCurrentMobBehaviors();
+		$('#createBehaviorModal').modal('hide');
+	}, '');
+}
+
+function getCurrentMobBehaviors() {
+	$.post('/php/settings/getMobBehaviors.php', {
+	
+	}, function(ret) {
+		$('#mobBehaviorsTable tbody').html('');
+		for (var x = 0; x < ret.length; x++) {
+			$('#mobBehaviorsTable tbody').append('<tr><td>' + ret[x] + '</td><td><a href="#" onClick="editBehavior(\'npcs\', \'' +  ret[x] + '\');"><i class="icon-pencil"></i> Edit</a></td></tr>');
+		}
+	}, 'json');
+}
+
+function getCurrentObjectBehaviors() {
+	$.post('/php/settings/getObjectBehaviors.php', {
+	
+	}, function(ret) {
+		$('#objectBehaviorTable tbody').html('');
+		for (var x = 0; x < ret.length; x++) {
+			$('#objectBehaviorTable tbody').append('<tr><td>' + ret[x] + '</td><td><a href="#" onClick="editBehavior(\'objects\', \'' +  ret[x] + '\');"><i class="icon-pencil"></i> Edit</a></td></tr>');
+		}
+	}, 'json');
+}
+
+//#mark General functions
+
+function show(item) {
+	$('#settingList li').removeClass('active');
+	$('#settingList li.'+item).addClass('active');
+	$('#settingPanels > div').hide();
+	$('#' + item).show();
+	$('#settingHeader').text($('#' + item).attr('alt'));
+}
+
+function defNBSP(x) { return (x == '' ? '&nbsp;' : x); }
 
 function handleSettingChange() {
 	$('div.hideable').hide();
@@ -109,7 +160,7 @@ function addItemToList(item) {
 }
 
 $(document).ready(function() {
-	$('#myModal').modal({
+	$('#myModal. #createBehaviorModal').modal({
 		backdrop: 'static',
 		keyboard: false,
 		show: false

@@ -100,7 +100,7 @@ function loadAreaMap(area) {
 				rooms[loc]['RC_MAP'] = {x: 10, y: 10};
 			}
 			var rm = rooms[loc];
-			$('div.map').append('<div class="room" id="room_' + rm.location + '" style="top: ' + rm.RC_MAP.y + 'px; left: ' + rm.RC_MAP.x + 'px"><span>' + rm.title.en + '</span></div>');
+			$('div.map').append('<div class="room" id="room_' + rm.location + '" style="top: ' + rm.RC_MAP.y + 'px; left: ' + rm.RC_MAP.x + 'px"><span>' + rm.title.en + '</span><i class="icon-cog"></i></div>');
 			if (typeof(rm.exits) != 'undefined') {
 				for (var e = 0; e < rm.exits.length; e++) {
 					addPath(loc, String(rm.exits[e].location));
@@ -118,6 +118,7 @@ function loadAreaMap(area) {
 				}
 			}
 		}
+		if (!MobileEsp.IsMobilePhone && !MobileEsp.IsTierTablet) { $('div.room i').hide(); }
 		$("div.room").draggable({
 			drag: function() {
 				var obj = { x: $(this).position().left,
@@ -249,9 +250,17 @@ $(document).ready(function (){
 	}, 'i.icon-info-sign');
 	
 	$('div.map').on({
+		doubleTap: function(e) {
+			openRoomEditor($(this).attr('id').substr(5));
+		},
 		dblclick: function(e) {
 			openRoomEditor($(this).attr('id').substr(5));
 		}
 	}, 'div.room');
+	$('div.map').on({
+		click: function(e) {
+			openRoomEditor($(this).parent().attr('id').substr(5));
+		}
+	}, 'i');
 	
 });

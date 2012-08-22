@@ -21,6 +21,12 @@ $motd = readRanvierFile('/data/motd');
 							<li class="motd active" onclick="show('motd');">
 								<a href="#">MOTD</a>
 							</li>
+							<li class="objectBehaviors" onclick="show('objectBehaviors'); getCurrentObjectBehaviors();">
+								<a href="#">Object Behaviors</a>
+							</li>
+							<li class="mobBehaviors" onclick="show('mobBehaviors'); getCurrentMobBehaviors();">
+								<a href="#">Mob Behaviors</a>
+							</li>
 							<li class="playerSettings" onclick="show('playerSettings'); getCurrentPlayerSetup();">
 								<a href="#">Player Definition</a>
 							</li>
@@ -52,6 +58,32 @@ $motd = readRanvierFile('/data/motd');
 										<th>Field &nbsp;&nbsp;&nbsp;<a href="#" onClick="editAttribute(-1);" class="btn btn-sucess">Create New</a></th>
 										<th width="100">Default</th>
 										<th width="100">Type</th>
+										<th width="100">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+								
+								</tbody>
+							</table>
+						</div>
+						<div class="row-fluid" id="objectBehaviors" style="display: none" alt="Object Behaviors">
+							<table class="table table-striped table-bordered table-condensed" id="objectBehaviorTable">
+								<thead>
+									<tr>
+										<th>File &nbsp;&nbsp;&nbsp;<a href="#" onClick="createBehavior('objects');" class="btn btn-sucess">Create New</a></th>
+										<th width="100">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
+								
+								</tbody>
+							</table>
+						</div>
+						<div class="row-fluid" id="mobBehaviors" style="display: none" alt="Mob Behaviors">
+							<table class="table table-striped table-bordered table-condensed" id="mobBehaviorsTable">
+								<thead>
+									<tr>
+										<th>File &nbsp;&nbsp;&nbsp;<a href="#" onClick="createBehavior('npcs');" class="btn btn-sucess">Create New</a></th>
 										<th width="100">Actions</th>
 									</tr>
 								</thead>
@@ -111,6 +143,22 @@ $motd = readRanvierFile('/data/motd');
 	<div class="modal-footer">
 		<a href="#" class="btn" data-dismiss="modal">Close</a>
 		<a href="#" class="btn btn-primary" onClick="saveAttribute()">Save changes</a>
+	</div>
+</div>
+<div class="modal hide fade" id="createBehaviorModal">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">x</button>
+		<h3>Behavior Creator</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row-fluid">
+			<div class="span4">Behavior Name<input type="hidden" id="behaviorType"></div>
+			<div class="span8"><input type="text" class="span12" id="behavior"></div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn" data-dismiss="modal">Close</a>
+		<a href="#" class="btn btn-primary" onClick="saveBehavior()">Save Behavior</a>
 	</div>
 </div>
 <style>

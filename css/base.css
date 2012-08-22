@@ -13,3 +13,18 @@
 	height: 280px;
 	width: 97%;
 }
+
+div.room i {
+	left: 45px;
+	top: 34px;
+	position: absolute;
+	z-index: 401;
+}
+
+#codeEditor {
+	width: 98%;
+	height: 244px;
+	font-family: courier, serif;
+	font-size: 11px;
+	line-height: 13px;
+}

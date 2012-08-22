@@ -15,9 +15,11 @@ include_once('php/global/ranvier.php');
 	<script language="javascript" src="/js/jquery-ui.min.js"></script>
 	<script language="javascript" src="/js/jquery-touch-punch.js"></script>
 	<script language="javascript" src="/js/json2.js"></script>
+	<script language="javascript" src="/js/jqTouch.js"></script>
 	<script src="/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/js/ace/theme-ranvier.js" type="text/javascript" charset="utf-8"></script>
 	<script src="/js/ace/mode-javascript.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/js/mdetect.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body id="nosn">
 	<? include('header.php'); ?>

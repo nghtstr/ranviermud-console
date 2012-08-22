@@ -57,16 +57,21 @@ function openScriptEditor(filepath, title) {
 	}, function(data) {
 		$('#fileID').val(data.filepath);
 		$('#editorTitle').text(data.title);
-		codeEditor.setValue(data.script);
+		if (!MobileEsp.IsMobilePhone && !MobileEsp.IsTierTablet) {
+			codeEditor.setValue(data.script);
+		} else {
+			$('#codeEditor').val(data.script);
+		}
 		$('#scriptEditor').modal('show');
 		
 	}, 'json');
 }
 
 function saveEditor() {
+	var script = (!MobileEsp.IsMobilePhone && !MobileEsp.IsTierTablet ? codeEditor.getValue() : $('#codeEditor').val());
 	$.post('/php/global/saveScriptFile.php', {
 		file: $('#fileID').val(),
-		script: codeEditor.getValue()
+		script: script
 	}, function(data) {
 		$('#scriptEditor').modal('hide');
 	}, '');
@@ -80,8 +85,12 @@ $(document).ready(function (){
 		keyboard: false,
 		show: false
 	});
-	codeEditor = ace.edit("editorTextPlacement");
-	codeEditor.setTheme("ace/theme/ranvier");
-	var JavaScriptMode = require("ace/mode/javascript").Mode;
-	codeEditor.getSession().setMode(new JavaScriptMode());
+	if (!MobileEsp.IsMobilePhone && !MobileEsp.IsTierTablet) {
+		codeEditor = ace.edit("editorTextPlacement");
+		codeEditor.setTheme("ace/theme/ranvier");
+		var JavaScriptMode = require("ace/mode/javascript").Mode;
+		codeEditor.getSession().setMode(new JavaScriptMode());
+	} else {
+		$('#editorTextPlacement').html('<textarea id="codeEditor"></textarea>');
+	}
 });

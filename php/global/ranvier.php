@@ -1,7 +1,11 @@
 <?
 
+// MARK Defines
+
 define('SETTING_FILE', dirname(__FILE__) . '/../../conf/mud.conf');
 define('IS_YAML', true);
+
+// MARK File I/O
 
 function loadSettings() {
 	if (file_exists(SETTING_FILE)) {
@@ -38,6 +42,8 @@ function ranvierFileExists($file) {
 	return file_exists($settings['base_game'] . $name);
 }
 
+// MARK Room Functions
+
 function loadRoomList() {
 	include_once(dirname(__FILE__) . '/yaml/spyc.php');
 	$settings = loadSettings();
@@ -59,6 +65,30 @@ function loadRoomList() {
 		foreach ($array as $a) { $rooms[$a['location']] = array('title'=>$a['title']['en'], 'area'=>$k); }
 	}
 	saveSetting('rooms', $rooms);
+}
+
+// MARK Behavior Functions
+
+function loadBehaviors($type) {
+	$settings = loadSettings();
+	$files = array();
+	if ($handle = opendir($settings['base_game'] . '/scripts/behaviors/' . $type . '/')) {
+		while (false !== ($entry = readdir($handle))) {
+			if ($entry != "." && $entry != "..") {
+				$files[] = substr($entry, 0, -3);
+			}
+		}
+		closedir($handle);
+	}
+	return $files;
+}
+
+function loadObjectBehaviors() {
+	return loadBehaviors('objects');
+}
+
+function loadMobBehaviors() {
+	return loadBehaviors('npcs');
 }
 
 ?>
