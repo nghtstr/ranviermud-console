@@ -1,5 +1,5 @@
 <?
-error_reporting(E_ALL);
+
 include_once(dirname(__FILE__) . '/../global/ranvier.php');
 
 $last = $_POST['lastDate'];

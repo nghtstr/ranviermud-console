@@ -9,6 +9,16 @@ function getCurrentPlayerData(lastDate, series) {
 	}, 'json');
 }
 
+function getDailyPlayerData(axis, maxHigh, avgHigh) {
+	$.post('/php/home/getDailyPlayerData.php', {
+	}, function(data) {
+		axis.setCategories(data.axis);
+		maxHigh.setData(data.maxHigh);
+		avgHigh.setData(data.avgHigh);
+	}, 'json');
+}
+
+
 var currentPlayersDate = '';
 
 $(document).ready(function() {
@@ -64,9 +74,6 @@ $(document).ready(function() {
 		legend: {
 			enabled: false
 		},
-		exporting: {
-			enabled: false
-		},
 		series: [{
 			name: 'Current Players',
 			data: (function() {
@@ -86,5 +93,65 @@ $(document).ready(function() {
 				return data;
 			})()
 		}]
+	});
+	
+	var monthly;
+	
+	monthly = new Highcharts.Chart({
+		chart: {
+			renderTo: 'monthlyPlayersGraph',
+			events: {
+				load: function() {
+
+					// set up the updating of the chart each second
+					var maxHigh = this.series[0];
+					var avgHigh = this.series[1];
+					var axis = this.xAxis[0];
+					getDailyPlayerData(axis, maxHigh, avgHigh);
+					setInterval(function() {
+						getDailyPlayerData(axis, maxHigh, avgHigh);
+					}, (60000 * 15));
+				}
+			}
+		},
+		title: {
+			text: 'Monthly Players'
+		},
+		xAxis: {
+			categories: []
+		},
+		yAxis: {
+			title: {
+				text: 'Players'
+			},
+			min: 0,
+			allowDecimals: false,
+			plotLines: [{
+				value: 0,
+				width: 1,
+				color: '#808080'
+			}]
+		},
+		tooltip: {
+			formatter: function() {
+				return '<b>'+ this.series.name +'</b><br/>'+
+				this.x +'<br/>'+
+				Highcharts.numberFormat(this.y, 3);
+			}
+		},
+		series: [{
+			type: 'column',
+			name: 'Max High',
+			data: []
+		}, {
+			type: 'spline',
+			name: 'Average High',
+			data: [],
+			marker: {
+				lineWidth: 0,
+				lineColor: Highcharts.getOptions().colors[1]
+			}
+		}
+		]
 	});
 });

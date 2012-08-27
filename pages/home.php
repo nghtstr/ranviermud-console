@@ -1,4 +1,12 @@
-<script language="Javascript" src="/js/highcharts.js"></script>
+<?
+
+$settings = loadSettings();
+loadRoomList();
+
+$players = count(glob($settings['base_game'] . '/data/players/*.json'));
+$areas = getAreaList();
+
+?><script language="Javascript" src="/js/highcharts.js"></script>
 <div id="titlebody">
 	<div class="row-fluid">
 		<div class="span12 titlediv">
@@ -28,15 +36,15 @@
 					<div class="widget-inside">
 						<div class="row-fluid">
 							<div class="span9">Total Rooms</div>
-							<div class="span3">0</div>
+							<div class="span3"><?= count($settings['rooms']); ?></div>
 						</div>
 						<div class="row-fluid">
 							<div class="span9">Total Areas</div>
-							<div class="span3">0</div>
+							<div class="span3"><?= count($areas); ?></div>
 						</div>
 						<div class="row-fluid">
 							<div class="span9">Total Players</div>
-							<div class="span3">0</div>
+							<div class="span3"><?= $players; ?></div>
 						</div>
 						<div class="row-fluid">
 							<div class="span9">Total Items</div>
@@ -54,6 +62,18 @@
 						<div class="row-fluid">
 							<div class="span12">
 								<div id="activePlayersGraph"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row-fluid">
+				<div class="span12 widget">
+					<h2 id="settingHeader">Monthly Players</h2>
+					<div class="widget-inside">
+						<div class="row-fluid">
+							<div class="span12">
+								<div id="monthlyPlayersGraph"></div>
 							</div>
 						</div>
 					</div>

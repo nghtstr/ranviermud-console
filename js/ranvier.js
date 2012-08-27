@@ -57,12 +57,12 @@ function openScriptEditor(filepath, title) {
 	}, function(data) {
 		$('#fileID').val(data.filepath);
 		$('#editorTitle').text(data.title);
+		$('#scriptEditor').modal('show');
 		if (!MobileEsp.IsMobilePhone && !MobileEsp.IsTierTablet) {
 			codeEditor.setValue(data.script);
 		} else {
 			$('#codeEditor').val(data.script);
 		}
-		$('#scriptEditor').modal('show');
 		
 	}, 'json');
 }
@@ -84,6 +84,10 @@ $(document).ready(function (){
 		backdrop: 'static',
 		keyboard: false,
 		show: false
+	});
+	$('#scriptEditor').on('shown', function() {
+		$('#scriptEditor .modal-body').outerHeight($('#scriptEditor').height() - $('#scriptEditor .modal-header').outerHeight() - $('#scriptEditor .modal-footer').outerHeight());
+		$('#editorTextPlacement').outerHeight($('#scriptEditor .modal-body').innerHeight() - 40);
 	});
 	if (!MobileEsp.IsMobilePhone && !MobileEsp.IsTierTablet) {
 		codeEditor = ace.edit("editorTextPlacement");

@@ -5,6 +5,15 @@
 
 #scriptEditor {
 	min-height: 400px;
+	height:90%;
+	width: 70%;
+	margin-left: -35%;
+	margin-top: -45%;
+	max-height: 8000px;
+}
+
+#scriptEditor .modal-body {
+	max-height: 8000px;
 }
 
 #scriptEditor .modal-body { height: 300px; }

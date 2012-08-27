@@ -44,7 +44,7 @@ function ranvierFileExists($file) {
 
 // MARK Room Functions
 
-function loadRoomList() {
+function getAreaList() {
 	include_once(dirname(__FILE__) . '/yaml/spyc.php');
 	$settings = loadSettings();
 	$areas = array();
@@ -57,6 +57,13 @@ function loadRoomList() {
 		}
 		closedir($handle);
 	}
+	return $areas;
+}
+
+function loadRoomList() {
+	include_once(dirname(__FILE__) . '/yaml/spyc.php');
+	$settings = loadSettings();
+	$areas = getAreaList();
 	$rooms = array();
 	
 	foreach ($areas as $k=>$l) {
